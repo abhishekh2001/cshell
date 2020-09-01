@@ -7,11 +7,7 @@
 #include <malloc.h>
 
 #define STR_SIZE 1000000
-
-struct command {
-    char *command_array[100];
-    size_t command_length;
-};
+#define SPACE " "
 
 // get rid of trailing newline char
 void tokenize(char* line, char* res) {
@@ -31,28 +27,22 @@ void tokenize(char* line, char* res) {
     } 
 }
 
-// void tokenize2(char* line, struct command *res, int *number_commands) {
-//    char* cmd = strtok(line," \t");
-//    char sp[] = " ";
-//    res = (struct command*) malloc(res, sizeof(struct command));
-//    &number_commands = 1;
-//    res[&number_commands-1].command_length = 1;
-//    strcpy(res[*number_commands-1].command_array[0], cmd);
+// end with newline
+int echo_implementation(char* command) {
+    printf("Init echo command: %s\n", command);
+    char* line = (char*) malloc(sizeof(char) * strlen(command));
+    strcpy(line, command);
+    
+    char* cmd = strtok(line," \t");
+    cmd = strtok(NULL, " \t");
 
-//    while (cmd != NULL) {
-//         // printf ("token: %s\n",cmd);
-//         cmd = strtok(NULL, " \t");
-//         // if (cmd) {
-//         //     size_t length = strlen(res);
-//         //     res[length] = ' ';
-//         //     res[length+1] = '\0';
-//         //     strcat(res, cmd);
-//         // }
-//         res[&number_commands-1].command_array = realloc()
-//         res[&number_commands-1].command_length++;
-//         strcpy(res[&number_commands-1].command_array[res[&number_commands-1].command_length-1], cmd);
-//     } 
-// }
+    while (cmd != NULL) {
+        printf ("%s ", cmd);
+        cmd = strtok(NULL, " \t");
+    }
+    printf("\n");
+    return 0;
+}
 
 // ASSUMPTION: no spaces in path
 int cd_implementation(char* line) {
@@ -119,11 +109,15 @@ int main() {
         get_prompt(prompt);
         printf("%s ", prompt);
         
+        // --------- RETRIEVE INPUT ----------
         // scanf(" %[^\n]s", inp);
         if (getline (&inp, &temp, stdin) < 0) {
             perror("Error getting input");
             return 1;
         };
+        if (inp[strlen(inp)-1] == '\n')
+            inp[strlen(inp)-1] = '\0';
+
         printf("Input: %s\n", inp);
         tokenize(inp, clean_inp);
         printf("Clean input: %s-Done\n", clean_inp);
@@ -132,9 +126,9 @@ int main() {
         char* temp_clean_inp = malloc(STR_SIZE);
         strcpy(temp_clean_inp, clean_inp);
         if (strcmp(strtok(temp_clean_inp, " "), "cd") == 0) {
-            if (clean_inp[strlen(clean_inp)-1] == '\n')
-                clean_inp[strlen(clean_inp)-1] = '\0';
             cd_implementation(clean_inp);
+        } else {
+            echo_implementation(clean_inp);
         }
         fflush(stdin);
     }
