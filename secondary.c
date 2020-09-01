@@ -66,6 +66,7 @@ int echo_implementation(char* cmd, char** cmd_args, const int arg_len) {
 }
 
 // ASSUMPTION: no spaces in path
+// TODO: handle ~ flag
 int cd_implementation(char* cmd, char** cmd_args, const int arg_len) {
     if (arg_len != 1) {
         printf("Incorrect number of arguments or space encountered\n");
