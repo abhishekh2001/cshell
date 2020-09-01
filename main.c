@@ -24,7 +24,7 @@ void tokenize(char* line, char* res) {
             res[length+1] = '\0';
             strcat(res, cmd);
         }
-    } 
+    }
 }
 
 // end with newline
@@ -32,7 +32,7 @@ int echo_implementation(char* command) {
     printf("Init echo command: %s\n", command);
     char* line = (char*) malloc(sizeof(char) * strlen(command));
     strcpy(line, command);
-    
+
     char* cmd = strtok(line," \t");
     cmd = strtok(NULL, " \t");
 
