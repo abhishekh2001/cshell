@@ -1,0 +1,1 @@
+void handle_tilda(char* path, char* res);
