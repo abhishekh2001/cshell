@@ -3,6 +3,27 @@
 #include "command_implementation.h"
 #include "io.h"
 
+// inp: semicolon separated inputs
+// idea: char** commands
+// split by ; and then store in array
+// loop through array
+// execute one by one
+// so sed
+void separate_cmd(char* inp) {
+    printf("input given to separa cmd: %s\n", inp);
+    char* cmd = strtok(inp, ";");
+    while (cmd != NULL) {
+        printf("--COMMAND--: %s\n", cmd);
+
+        char* temp = malloc(sizeof(char) * strlen(cmd));
+        strcpy(temp, cmd);
+        handle_cmd(temp);
+        free(temp);
+
+        cmd = strtok(NULL, ";");
+    }
+    printf("Done executing all commands\n");
+}
 
 void handle_cmd(char* inp) {
     char* cmd = (char*) malloc(sizeof(inp));

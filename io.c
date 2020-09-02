@@ -59,6 +59,9 @@ int get_prompt(char* str) {
         return -1;
     }
 
+    insert_tilda(path);
+    printf("With tilda: %s\n", path);
+
     temp_ch[0] = '<';
     strcpy (str, temp_ch);
     strcat(str, username); (temp_ch[0] = '@');

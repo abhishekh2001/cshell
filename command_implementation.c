@@ -21,12 +21,10 @@ int cd_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
     char* path = malloc(sizeof(char) * STR_SIZE);
     if (arg_len == 0) {
-        strcpy(path, "~");
+        strcpy(path, homedir);
     } else {
         handle_tilda(cmd_args[0], path);
     }
-
-    printf("Handled path is now %s\n", path);
 
     chdir(path);
     return 0;

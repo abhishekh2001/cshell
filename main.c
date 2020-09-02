@@ -30,6 +30,7 @@ int main() {
 
         printf("Input: %s\n", inp);
         handle_cmd(inp);
+
         fflush(stdin);
     }
 }
