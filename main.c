@@ -4,10 +4,14 @@
 #include "parse_cmd.h"
 
 int main() {
-    struct passwd *pw = getpwuid(getuid());
-    homedir = pw->pw_dir;
+    // struct passwd *pw = getpwuid(getuid());
+    // homedir = pw->pw_dir;
 
-    chdir(homedir);
+    homedir = malloc(sizeof(char) * STR_SIZE);
+    if (getcwd(homedir, STR_SIZE) == NULL) {
+        perror("Error getting cwd");
+        return -1;
+    }
 
     size_t temp;
     char prompt[STR_SIZE], clean_inp[STR_SIZE];
