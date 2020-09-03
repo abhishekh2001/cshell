@@ -8,6 +8,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <malloc.h>
+#include <dirent.h>
 
 #define STR_SIZE 100000
 #define SPACE " "

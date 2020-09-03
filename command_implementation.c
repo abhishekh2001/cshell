@@ -75,7 +75,13 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
     printf("numdirs encountered = %d\n", num_dirs);
     if (num_dirs == 0) {
-        ls ("~", flags);
+        char* cwd = malloc(sizeof(char) * STR_SIZE);
+        if (getcwd(cwd, STR_SIZE) == NULL) {
+            perror("Error getting cwd");
+            return -1;
+        }
+        ls(cwd, flags);
+        free(cwd);
         return 0;
     } else if (num_dirs == 1) {
         print_file_names = 0;
@@ -110,6 +116,28 @@ int ls(char* path, int flags[256]) {
     if ((stat(path, &pstat) < 0)) {  // TODO: check for directory
         perror("Could not list directory contents");
         return -1;
+    }
+
+
+    DIR *dir;
+    struct dirent *ent;
+
+    if (!flags['l']) {
+        if ((dir = opendir(path)) != NULL) {
+            /* print all the files and directories within directory */
+            while ((ent = readdir(dir)) != NULL) {
+                if (ent->d_name[0] == '.' && !flags['a'])
+                    continue;
+                printf("%s\t", ent->d_name);
+            }
+            closedir(dir);
+        } else {
+            /* could not open directory */
+            perror("Could not open directory");
+            return -1;
+        }
+    } else {
+        printf("TODO: handle list formatting");
     }
 }
 
