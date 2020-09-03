@@ -26,12 +26,40 @@ void separate_cmd(char* inp) {
 }
 
 void handle_cmd(char* inp) {
-    char* cmd = (char*) malloc(sizeof(inp));
-    char** cmd_args;                   
-    cmd_args = (char**) malloc(sizeof(char**) * strlen(inp)+10);
-    int cmd_len;
+    char* cmd = (char*) malloc(sizeof(char) * strlen(inp)+1);
+    char** cmd_args = (char**) malloc(sizeof(char*) * strlen(inp));
+    int cmd_len = 0;
 
-    tokenize(inp, cmd, cmd_args, &cmd_len);
+    // tokenize(inp, cmd, cmd_args, &cmd_len);
+
+
+    // tokenize
+    char* line = (char*) malloc(sizeof(char)*strlen(inp)+10);
+    printf("Successfully created line\n");
+    strcpy(line, inp);
+
+    char* chnk = strtok(line, " \t");
+    if (chnk == NULL) {
+        printf("Abruptly exit tokenizing command\n");
+        return;
+    }
+    strcpy(cmd, chnk);
+    
+    // should be alloted by caller
+    // cmd_args = (char**) malloc(sizeof(char**) * strlen(raw_input)+1);
+    printf("Successfully alloted mem for **cmd_args\n");
+    printf("Command copied %s\n", chnk);
+    chnk = strtok(NULL, " \t");
+    while (chnk != NULL) {
+        cmd_args[cmd_len] = (char*) malloc(sizeof(char) * (strlen(chnk) + strlen(homedir) + 100));  // TODO: change size
+        strcpy(cmd_args[cmd_len], chnk);
+        cmd_len++;
+
+        chnk = strtok(NULL, " \t");
+    }
+    free(line);
+
+
 
     printf("After tokenizing, command extracted = %s\n", cmd);
     printf("Command number: %d\n", cmd_len);
@@ -40,7 +68,7 @@ void handle_cmd(char* inp) {
     }
     printf("\n");
 
-    printf("------ NOW HANDLING COMMANDS-----------\n");
+    printf("------ NOW HANDLING COMMAND-----------\n");
 
     if (!strcmp(cmd, "cd")) {
         cd_implementation(cmd, cmd_args, cmd_len);
@@ -48,10 +76,13 @@ void handle_cmd(char* inp) {
         echo_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "pwd")) {
         pwd_implementation(cmd, cmd_args, cmd_len);
-    } else {
-        printf("command not identified");
+    } else if (!strcmp(cmd, "ls")) {
+        ls_implementation(cmd, cmd_args, cmd_len);
     }
     
+    else {
+        printf("command not identified");
+    }
 
     for (int i = 0; i < cmd_len; i++) {
         free(cmd_args[i]);

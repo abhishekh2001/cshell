@@ -11,6 +11,8 @@ void handle_tilda(char* path, char* res) {
     } else {
         strcpy(res, path);
     }
+
+    printf("res %s\n", res);
 }
 
 void insert_tilda(char* path) {

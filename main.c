@@ -37,4 +37,6 @@ int main() {
 
         fflush(stdin);
     }
+
+    free(homedir);
 }
