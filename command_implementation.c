@@ -80,7 +80,7 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
             perror("Error getting cwd");
             return -1;
         }
-        ls(cwd, flags);
+        ls(cwd, flags, 0);
         free(cwd);
         return 0;
     } else if (num_dirs == 1) {
@@ -91,10 +91,7 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
     for (int i = 0; i < arg_len; i++) {
         if ((cmd_args[i][0] == '-' && strlen(cmd_args[i]) == 1) || cmd_args[i][0] != '-') {
-            if (print_file_names) {
-                printf("%s:\n", cmd_args[i]);
-            }
-            ls(cmd_args[i], flags);
+            ls(cmd_args[i], flags, print_file_names);
             printf("\n");
         }
     }
@@ -140,13 +137,17 @@ void prettify_time__(char* mod_time) {
 }
 
 // inner implementation handling the printing
-int ls(char* path, int flags[256]) {
+int ls(char* path, int flags[256], int print_name) {
     struct stat pstat, s;
 
     char* ptemp = (char*) malloc(sizeof(char) * STR_SIZE);
-    strcpy(ptemp, path); handle_tilda(ptemp, path);
+    strcpy(ptemp, path);
+    handle_tilda(ptemp, path);
     free(ptemp);
 
+    if (print_name) {
+        printf("%s:\n", path);
+    }
     printf("Calling path %s\n", path);
     // if ((stat(path, &pstat) < 0) || !S_ISDIR(pstat.st_mode)) {
     if ((stat(path, &pstat) < 0)) {  // TODO: check for directory
