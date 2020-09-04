@@ -226,12 +226,11 @@ int ls(char* path, int flags[256], int print_name) {
     }
 }
 
-
 int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     pid_t pid;
     ssize_t p_exec_path_len;
     char process_status;
-    char process_status_path[STR_SIZE], process_name[STR_SIZE];
+    char process_status_path[STR_SIZE];
     char process_mem[STR_SIZE], process_exec_path[STR_SIZE+1], pid_str[STR_SIZE];
 
     if (arg_len == 0) {
@@ -279,9 +278,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
         char* word = strtok(line, COL_DEL);
         char* word_ = strtok(NULL, COL_DEL);
-        if ((strcmp(word, "Name") == 0) && word_) {
-            strcpy(process_name, word_);
-        } else if ((strcmp(word, "State") == 0) && word_) {
+        if ((strcmp(word, "State") == 0) && word_) {
             process_status = word_[0];
         } else if ((strcmp(word, "VmSize") == 0) && word_) {
             strcpy(process_mem, word_);
