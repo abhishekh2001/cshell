@@ -226,3 +226,81 @@ int ls(char* path, int flags[256], int print_name) {
     }
 }
 
+
+int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    pid_t pid;
+    ssize_t p_exec_path_len;
+    char process_status;
+    char process_status_path[STR_SIZE], process_name[STR_SIZE];
+    char process_mem[STR_SIZE], process_exec_path[STR_SIZE+1], pid_str[STR_SIZE];
+
+    if (arg_len == 0) {
+        pid = getpid();
+        sprintf(pid_str, "%d", pid);
+    } else if (arg_len > 1) {
+        printf("Error at pinfo: invalid number of arguments\n");
+        return -1;
+    } else {
+        for (int i = 0; i < strlen(cmd_args[0]); i++) {
+            if (cmd_args[0][i] < '0' || cmd_args[0][i] > '9') {
+                printf("Error at pinfo: Illegal argument\n");
+                return -1;
+            }
+        }
+        if ((pid = strtol(cmd_args[0], NULL, 10)) < 0) {
+            printf("Error at pinfo: pid cannot be negative\n");
+            return -1;
+        }
+        strcpy(pid_str, cmd_args[0]);
+    }
+
+    printf("Retrieved pid = %d\n", pid);
+
+    // process path: /proc/<pid>/status
+    strcpy(process_status_path, "/proc/");
+    strcat(process_status_path, pid_str);
+    strcat(process_status_path, "/status");
+    // process exec path: /proc/<pid>/exe
+    strcpy(process_exec_path, "/proc/");
+    strcat(process_exec_path, pid_str);
+    strcat(process_exec_path, "/exe");
+
+    printf("Proc status path = %s\n", process_status_path);
+    FILE* f_process_status = fopen(process_status_path, "r");
+    if (f_process_status == NULL) {
+        printf("Error opening process status file\n");
+        return -1;
+    }
+
+    char* line = (char*) malloc(sizeof(char) * (STR_SIZE + 1));
+    while (fgets(line, STR_SIZE, f_process_status) != NULL) {
+        // line stores a single line from /proc/<pid>/status
+        // cat /proc/2385/status
+
+        char* word = strtok(line, COL_DEL);
+        char* word_ = strtok(NULL, COL_DEL);
+        if ((strcmp(word, "Name") == 0) && word_) {
+            strcpy(process_name, word_);
+        } else if ((strcmp(word, "State") == 0) && word_) {
+            process_status = word_[0];
+        } else if ((strcmp(word, "VmSize") == 0) && word_) {
+            strcpy(process_mem, word_);
+        }
+    }
+
+    printf("Done reading stat file\n");
+    fclose(f_process_status);
+
+    if ((p_exec_path_len = readlink(process_exec_path, line, STR_SIZE)) < 0) {
+        perror("Accessing proc/<pid>/exe");
+        return -1;
+    }
+    line[p_exec_path_len] = '\0';
+
+    printf("pid -- %s\n", pid_str);
+    printf("Process Status -- %c\n", process_status);
+    printf("memory -- %s\n", process_mem);
+    printf("Executable Path -- %s\n", line);
+
+    return 0;
+}

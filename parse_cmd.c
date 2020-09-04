@@ -78,6 +78,8 @@ void handle_cmd(char* inp) {
         pwd_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "ls")) {
         ls_implementation(cmd, cmd_args, cmd_len);
+    } else if (!strcmp(cmd, "pinfo")) {
+        pinfo_implementation(cmd, cmd_args, cmd_len);
     }
     
     else {
