@@ -103,9 +103,45 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
     return 0;
 }
 
+void get_perms(struct stat s, char *perms) {
+    perms[0] = '-';
+
+    if (S_ISLNK(s.st_mode))
+        perms[0] = 'l';
+    else if (S_ISDIR(s.st_mode))
+        perms[0] = 'd';
+    
+    // usr
+    perms[1] = (s.st_mode & S_IRUSR) ? 'r' : '-';
+    perms[2] = (s.st_mode & S_IWUSR) ? 'w' : '-';
+    perms[3] = (s.st_mode & S_IXUSR) ? 'x' : '-';
+
+    // grp
+    perms[4] = (s.st_mode & S_IRGRP) ? 'r' : '-';
+    perms[5] = (s.st_mode & S_IWGRP) ? 'w' : '-';
+    perms[6] = (s.st_mode & S_IRGRP) ? 'x' : '-';
+
+    // oth
+    perms[7] = (s.st_mode & S_IROTH) ? 'r' : '-';
+    perms[8] = (s.st_mode & S_IWOTH) ? 'w' : '-';
+    perms[9] = (s.st_mode & S_IXOTH) ? 'x' : '-';
+
+    perms[10] = '\0';
+}
+
+void prettify_time__(char* mod_time) {
+    char* temp = malloc(sizeof(char) * strlen(mod_time));
+
+    for (int i = 4; i < 20; i++)
+        temp[i-4] = mod_time[i];
+    temp[16] = '\0';
+    strcpy(mod_time, temp);
+    free(temp);
+}
+
 // inner implementation handling the printing
 int ls(char* path, int flags[256]) {
-    struct stat pstat;
+    struct stat pstat, s;
 
     char* ptemp = (char*) malloc(sizeof(char) * STR_SIZE);
     strcpy(ptemp, path); handle_tilda(ptemp, path);
@@ -137,7 +173,55 @@ int ls(char* path, int flags[256]) {
             return -1;
         }
     } else {
-        printf("TODO: handle list formatting");
+        if ((dir = opendir(path)) != NULL) {
+            // TODO: retrieve total_blocks prior to listing content
+            blkcnt_t total_blocks = 0;
+            nlink_t n_links;
+            off_t  f_size;
+            char perms[30];
+            char* mod_time;
+            /* print all the files and directories within directory */
+            while ((ent = readdir(dir)) != NULL) {
+                if (ent->d_name[0] == '.' && !flags['a'])
+                    continue;
+
+                char* filepath = (char*) malloc(sizeof(char) * (strlen(path) + strlen(ent->d_name) + 1));  // FREE
+                strcpy(filepath, path);
+                strcat(filepath, "/");
+                strcat(filepath, ent->d_name);
+
+                if (stat(filepath, &s) < 0) {
+                    perror("Unable to retrieve file");
+                    free(filepath);
+                    continue;
+                }
+
+                // Get file information
+                // -rwxrwxr-x 1 usr grp  16696 Sep  3 00:31
+                get_perms(s, perms);
+                n_links = s.st_nlink;
+                char* user = getpwuid(s.st_uid)->pw_name;
+                char* group = getgrgid(s.st_gid)->gr_name;
+                f_size = s.st_size;
+                mod_time = ctime(&s.st_mtime);
+
+                prettify_time__(mod_time);
+
+                total_blocks += s.st_blocks;
+
+                printf("%s\t%lu\t%s\t%s\t%lu\t%s\t%s\n",
+                    perms, n_links, user, group, f_size,
+                    mod_time, ent->d_name);
+
+                free(filepath);
+            }
+            printf("total: %ld\n", total_blocks / 2);  // Check later why div_2?
+            closedir(dir);
+        } else {
+            /* could not open directory */
+            perror("Could not open directory");
+            return -1;
+        }
     }
 }
 
