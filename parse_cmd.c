@@ -83,8 +83,8 @@ void handle_cmd(char* inp) {
         pinfo_implementation(cmd, cmd_args, cmd_len);
     }
     else {
-        if (cmd_len > 1 && strcmp(cmd_args[cmd_len-1], "&") == 0) {
-            // execute in the bg
+        if (cmd_len >= 1 && strcmp(cmd_args[cmd_len-1], "&") == 0) {
+            bg_execution(cmd, cmd_args, cmd_len - 1);
         } else {
             fg_execution(cmd, cmd_args, cmd_len);
         }
