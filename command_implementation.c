@@ -271,7 +271,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
         return -1;
     }
 
-    char* line = (char*) malloc(sizeof(char) * (STR_SIZE + 1));
+    char* line = (char*) malloc(sizeof(char) * (STR_SIZE + 1));  // free line
     while (fgets(line, STR_SIZE, f_process_status) != NULL) {
         // line stores a single line from /proc/<pid>/status
         // cat /proc/2385/status
@@ -294,10 +294,41 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     }
     line[p_exec_path_len] = '\0';
 
+    insert_tilda(line);
+
     printf("pid -- %s\n", pid_str);
     printf("Process Status -- %c\n", process_status);
     printf("memory -- %s\n", process_mem);
     printf("Executable Path -- %s\n", line);
 
+    free(line);
+    return 0;
+}
+
+int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    char** ex_args = (char**) malloc(sizeof(char*) * (arg_len + 2));
+    ex_args[0] = (char*) malloc(sizeof(char) * strlen(cmd));
+    strcpy(ex_args[0], cmd);
+    
+    for (int i = 0; i < arg_len; i++) {
+        ex_args[i+1] = (char*) malloc(sizeof(char) * strlen(cmd_args[i]));
+        strcpy(ex_args[i+1], cmd_args[i]);
+    }
+    cmd_args[arg_len+1] = NULL;
+
+    if (execvp(cmd, ex_args) < 0) {
+        printf("Error executing command system command '%s'\n", cmd);
+        for (int i = 0; i <= arg_len; i++) {
+            free(ex_args[i]);
+        }
+        free(ex_args);
+        return -1;
+    }
+
+    for (int i = 0; i <= arg_len; i++) {
+        free(ex_args[i]);
+    }
+    free(ex_args);
+    
     return 0;
 }

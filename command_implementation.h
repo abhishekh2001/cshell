@@ -10,3 +10,4 @@ void get_perms(struct stat s, char *perms);
 void prettify_time__(char* mod_time);
 int ls(char* path, int flags[256], int print_name);
 int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len);
+int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len);

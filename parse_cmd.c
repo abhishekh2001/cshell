@@ -1,6 +1,7 @@
 #include "main.h"
 #include "parse_cmd.h"
 #include "command_implementation.h"
+#include "sys_commands.h"
 #include "io.h"
 
 // inp: semicolon separated inputs
@@ -81,9 +82,12 @@ void handle_cmd(char* inp) {
     } else if (!strcmp(cmd, "pinfo")) {
         pinfo_implementation(cmd, cmd_args, cmd_len);
     }
-    
     else {
-        printf("command not identified");
+        if (cmd_len > 1 && strcmp(cmd_args[cmd_len-1], "&") == 0) {
+            // execute in the bg
+        } else {
+            fg_execution(cmd, cmd_args, cmd_len);
+        }
     }
 
     for (int i = 0; i < cmd_len; i++) {
@@ -94,3 +98,4 @@ void handle_cmd(char* inp) {
 
     printf("Done freeing\n");
 }
+

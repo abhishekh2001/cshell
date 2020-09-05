@@ -1,2 +1,8 @@
 Assume - cannot be a valid dir name
 Do not have to take care of -h option in ls
+Builtin commands are always executed in the foreground
+When executing commands separated by semicolons, execute
+    commands in order i.e, wait for the first command
+    to finish execution before executing the second,
+    unless of course, the first were to be a background
+    process.

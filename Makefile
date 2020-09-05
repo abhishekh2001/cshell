@@ -1,7 +1,7 @@
 all: initialize
 
-initialize: main.o io.o command_implementation.o parse_cmd.o misc.o
-	gcc main.o io.o misc.o command_implementation.o parse_cmd.o -o shell.out
+initialize: main.o io.o command_implementation.o parse_cmd.o misc.o sys_commands.o
+	gcc main.o io.o misc.o command_implementation.o parse_cmd.o sys_commands.o -o shell.out
 
 main.o: main.c
 	gcc -c main.c
@@ -17,3 +17,6 @@ parse_cmd.o: parse_cmd.c
 
 misc.o: misc.c
 	gcc -c misc.c
+
+sys_commands.o: sys_commands.c
+	gcc -c sys_commands.c
