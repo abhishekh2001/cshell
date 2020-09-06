@@ -81,6 +81,8 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
             return -1;
         }
         ls(cwd, flags, 0);
+        printf("\n");
+        printf("<============= DONE INSIDE LS ===========>\n");
         free(cwd);
         return 0;
     } else if (num_dirs == 1) {
@@ -95,8 +97,7 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
             printf("\n");
         }
     }
-
-    printf("l: %d, a: %d\n", flags['l'], flags['a']);
+    
     return 0;
 }
 

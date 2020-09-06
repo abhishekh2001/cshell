@@ -13,15 +13,20 @@
 void separate_cmd(char* inp) {
     printf("input given to separa cmd: %s\n", inp);
     char* cmd = strtok(inp, ";");
+    num_cmds = 0;
     while (cmd != NULL) {
         printf("--COMMAND--: %s\n", cmd);
-
-        char* temp = malloc(sizeof(char) * strlen(cmd));
-        strcpy(temp, cmd);
-        handle_cmd(temp);
-        free(temp);
+        cmd_arr[num_cmds] = (char*) malloc(sizeof(char) * (strlen(cmd) + 100));
+        strcpy(cmd_arr[num_cmds], cmd);
+        num_cmds++;
 
         cmd = strtok(NULL, ";");
+    }
+
+    for (int i = 0; i < num_cmds; i++) {
+        handle_cmd(cmd_arr[i]);
+        printf("-------- Done handling %s---------\n", cmd_arr[i]);
+        free(cmd_arr[i]);
     }
     printf("Done executing all commands\n");
 }
@@ -90,6 +95,7 @@ void handle_cmd(char* inp) {
         }
     }
 
+    printf("Finished dealing with command. Time to free!\n");
     for (int i = 0; i < cmd_len; i++) {
         free(cmd_args[i]);
     }

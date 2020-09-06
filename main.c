@@ -33,7 +33,7 @@ int main() {
             inp[strlen(inp)-1] = '\0';
 
         printf("Input: %s\n", inp);
-        handle_cmd(inp);
+        separate_cmd(inp);
 
         fflush(stdin);
     }
