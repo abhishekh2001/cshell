@@ -1,6 +1,7 @@
 #include "sys_commands.h"
 #include "main.h"
 #include "command_implementation.h"
+#include "misc.h"
 
 int fg_execution(char* cmd, char** cmd_args, const int arg_len) {
     pid_t cpid, w;
@@ -50,11 +51,15 @@ int bg_execution(char* cmd, char** cmd_args, const int arg_len) {
     }
 
     if (cpid == 0) {  // In child
-        setpgid(0, 0);
+        setpgid(0, 0);  // Why do this?
         system_cmd_implementation(cmd, cmd_args, arg_len);
         return 0;
     } else {
         printf("Started process %d in the background\n", cpid);
+        char* temp = (char*) malloc(sizeof(char) * STR_SIZE);
+        build_cmd(cmd, cmd_args, arg_len, temp);
+        add(cpid, temp, bg_procs);
+        free(temp);
         return 0;
     }
 }

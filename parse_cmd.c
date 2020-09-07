@@ -99,14 +99,13 @@ void handle_cmd(char* inp_cmd) {
 
     printf("Finished dealing with command. Time to free!\n");
     for (int i = 0; i < cmd_len; i++) {
-        printf("Freeing %d = %s\n", i, cmd_args[i]);
         free(cmd_args[i]);
-        printf("Done freeing arg\n");
     }
-    printf("Attempting to free cmd_args\n");
     free(cmd_args);
-    printf("Attempting to free cmd\n");
     free(cmd);
     free(inp);
     printf("Done freeing\n");
+
+    printf("Current background processes\n");
+    display(bg_procs);
 }

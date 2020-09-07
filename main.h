@@ -11,8 +11,11 @@
 #include <dirent.h>
 #include <time.h>
 #include <pwd.h>
+#include "linkedlist.h"
 
 #define STR_SIZE 100000
 #define SPACE " "
 
 char *homedir;
+
+List * bg_procs;

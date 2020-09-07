@@ -7,6 +7,8 @@ int main() {
     // struct passwd *pw = getpwuid(getuid());
     // homedir = pw->pw_dir;
 
+    bg_procs = makelist();
+
     homedir = malloc(sizeof(char) * STR_SIZE);
     if (getcwd(homedir, STR_SIZE) == NULL) {
         perror("Error getting cwd");
@@ -39,4 +41,5 @@ int main() {
     }
 
     free(homedir);
+    destroy(bg_procs);
 }

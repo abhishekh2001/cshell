@@ -34,3 +34,12 @@ void insert_tilda(char* path) {
 
     free(res);
 }
+
+// char* res malloced by caller
+void build_cmd(char* cmd, char** cmd_args, const int arg_len, char* res) {
+    strcpy(res, cmd);
+    for (int i = 0; i < arg_len; i++) {
+        strcat(res, " ");
+        strcat(res, cmd_args[i]);
+    }
+}
