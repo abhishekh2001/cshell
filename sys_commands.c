@@ -55,11 +55,29 @@ int bg_execution(char* cmd, char** cmd_args, const int arg_len) {
         system_cmd_implementation(cmd, cmd_args, arg_len);
         return 0;
     } else {
-        printf("Started process %d in the background\n", cpid);
         char* temp = (char*) malloc(sizeof(char) * STR_SIZE);
         build_cmd(cmd, cmd_args, arg_len, temp);
+        printf("CMD[%s] with PID[%d] started in background\n", temp, cpid);
         add(cpid, temp, bg_procs);
         free(temp);
         return 0;
+    }
+}
+
+int proc_status(pid_t pid) {
+    return kill(pid, 0);
+}
+
+
+// DOES NOT WORK, AT ALL
+void update_bg_procs() {
+    Node * curr = bg_procs->head;
+
+    while (curr != NULL) {
+        if (proc_status(curr->data) < 0) {
+            printf("CMD[%s] with PID[%d] terminated\n", curr->cmd, curr->data);
+            delete(curr->data, bg_procs);
+        }
+        curr = curr->next;
     }
 }

@@ -1,14 +1,15 @@
 #include "linkedlist.h"
 
-struct node {
-  int data;
-  char * cmd;
-  struct node * next;
-};
+// struct node {
+//   int data;
+//   char * cmd;
+//   struct node * next;
+// };
 
-struct list {
-  Node * head; 
-};
+// struct list {
+//   Node * head; 
+//   int num;
+// };
 
 Node * createnode(int data, char * cmd);
 
@@ -30,6 +31,7 @@ List * makelist(){
     return NULL;
   }
   list->head = NULL;
+  list->num = 0;
   return list;
 }
 
@@ -68,6 +70,7 @@ void add(int data, char * cmd, List * list){
     }
     current->next = createnode(data, cmd);
   }
+  list->num++;
 }
 
 void delete(int data, List * list){
@@ -84,7 +87,8 @@ void delete(int data, List * list){
     }                               
     previous = current;             
     current = current->next;        
-  }                                 
+  }
+  list->num--;
 }                                   
 
 void reverse(List * list){

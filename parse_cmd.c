@@ -107,5 +107,6 @@ void handle_cmd(char* inp_cmd) {
     printf("Done freeing\n");
 
     printf("Current background processes\n");
+    update_bg_procs();
     display(bg_procs);
 }
