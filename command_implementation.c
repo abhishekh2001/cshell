@@ -187,7 +187,7 @@ int ls(char* path, int flags[256], int print_name) {
                 if (ent->d_name[0] == '.' && !flags['a'])
                     continue;
 
-                char* filepath = (char*) malloc(sizeof(char) * (strlen(path) + strlen(ent->d_name) + 1));  // FREE
+                char* filepath = (char*) malloc(sizeof(char) * STR_SIZE);  // FREE
                 strcpy(filepath, path);
                 strcat(filepath, "/");
                 strcat(filepath, ent->d_name);
@@ -218,13 +218,22 @@ int ls(char* path, int flags[256], int print_name) {
                 free(filepath);
             }
             printf("total: %ld\n", total_blocks / 2);  // Check later why div_2?
-            closedir(dir);
+            // if (closedir(dir) < 0) {
+            //     perror("error closing dir");
+            //     return -1;
+            // }
+            if (closedir(dir) < 0) {
+                perror("Error closing dir");
+                return -1;
+            }
+            printf("Closed directory\n");
         } else {
             /* could not open directory */
             perror("Could not open directory");
             return -1;
         }
     }
+    return 0;
 }
 
 int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {

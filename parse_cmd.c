@@ -12,13 +12,15 @@
 // so sed
 void separate_cmd(char* inp) {
     printf("input given to separa cmd: %s\n", inp);
+    unsigned long num_cmds = 0;
+
+    char** cmd_arr = (char**) malloc(sizeof(char) * (strlen(inp) + 10));
+
     char* cmd = strtok(inp, ";");
-    num_cmds = 0;
     while (cmd != NULL) {
         printf("--COMMAND--: %s\n", cmd);
         cmd_arr[num_cmds] = (char*) malloc(sizeof(char) * (strlen(cmd) + 100));
-        strcpy(cmd_arr[num_cmds], cmd);
-        num_cmds++;
+        strcpy(cmd_arr[num_cmds++], cmd);
 
         cmd = strtok(NULL, ";");
     }
@@ -28,11 +30,15 @@ void separate_cmd(char* inp) {
         printf("-------- Done handling %s---------\n", cmd_arr[i]);
         free(cmd_arr[i]);
     }
+    free(cmd_arr);
     printf("Done executing all commands\n");
 }
 
-void handle_cmd(char* inp) {
-    char* cmd = (char*) malloc(sizeof(char) * strlen(inp)+1);
+void handle_cmd(char* inp_cmd) {
+    printf("************** Handling input %s\n", inp_cmd);
+    char* inp = (char*) malloc(sizeof(char) * (strlen(inp_cmd)));
+    strcpy(inp, inp_cmd);
+    char* cmd = (char*) malloc(sizeof(char) * (strlen(inp)+10));
     char** cmd_args = (char**) malloc(sizeof(char*) * strlen(inp));
     int cmd_len = 0;
 
@@ -40,7 +46,7 @@ void handle_cmd(char* inp) {
 
 
     // tokenize
-    char* line = (char*) malloc(sizeof(char)*strlen(inp)+10);
+    char* line = (char*) malloc(sizeof(char)*(strlen(inp)+10));
     printf("Successfully created line\n");
     strcpy(line, inp);
 
@@ -53,8 +59,6 @@ void handle_cmd(char* inp) {
     
     // should be alloted by caller
     // cmd_args = (char**) malloc(sizeof(char**) * strlen(raw_input)+1);
-    printf("Successfully alloted mem for **cmd_args\n");
-    printf("Command copied %s\n", chnk);
     chnk = strtok(NULL, " \t");
     while (chnk != NULL) {
         cmd_args[cmd_len] = (char*) malloc(sizeof(char) * (strlen(chnk) + strlen(homedir) + 100));  // TODO: change size
@@ -64,8 +68,6 @@ void handle_cmd(char* inp) {
         chnk = strtok(NULL, " \t");
     }
     free(line);
-
-
 
     printf("After tokenizing, command extracted = %s\n", cmd);
     printf("Command number: %d\n", cmd_len);
@@ -97,11 +99,14 @@ void handle_cmd(char* inp) {
 
     printf("Finished dealing with command. Time to free!\n");
     for (int i = 0; i < cmd_len; i++) {
+        printf("Freeing %d = %s\n", i, cmd_args[i]);
         free(cmd_args[i]);
+        printf("Done freeing arg\n");
     }
+    printf("Attempting to free cmd_args\n");
     free(cmd_args);
+    printf("Attempting to free cmd\n");
     free(cmd);
-
+    free(inp);
     printf("Done freeing\n");
 }
-
