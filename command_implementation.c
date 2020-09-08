@@ -26,7 +26,10 @@ int cd_implementation(char* cmd, char** cmd_args, const int arg_len) {
         handle_tilda(cmd_args[0], path);
     }
 
-    chdir(path);
+    if (chdir(path) < 0) {
+        perror("Error changing directories");
+        return -1;
+    }
     return 0;
 }
 
@@ -82,7 +85,6 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
         }
         ls(cwd, flags, 0);
         printf("\n");
-        printf("<============= DONE INSIDE LS ===========>\n");
         free(cwd);
         return 0;
     } else if (num_dirs == 1) {
@@ -149,7 +151,6 @@ int ls(char* path, int flags[256], int print_name) {
     if (print_name) {
         printf("%s:\n", path);
     }
-    printf("Calling path %s\n", path);
     // if ((stat(path, &pstat) < 0) || !S_ISDIR(pstat.st_mode)) {
     if ((stat(path, &pstat) < 0)) {  // TODO: check for directory
         perror("Could not list directory contents");
@@ -166,7 +167,7 @@ int ls(char* path, int flags[256], int print_name) {
             while ((ent = readdir(dir)) != NULL) {
                 if (ent->d_name[0] == '.' && !flags['a'])
                     continue;
-                printf("%s\t", ent->d_name);
+                printf("%s\n", ent->d_name);
             }
             closedir(dir);
         } else {
@@ -316,7 +317,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
 }
 
 int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
-    char** ex_args = (char**) malloc(sizeof(char*) * (arg_len + 2));
+    char** ex_args = (char**) malloc(sizeof(char*) * (arg_len + 1));
     ex_args[0] = (char*) malloc(sizeof(char) * strlen(cmd));
     strcpy(ex_args[0], cmd);
     
@@ -324,10 +325,15 @@ int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
         ex_args[i+1] = (char*) malloc(sizeof(char) * strlen(cmd_args[i]));
         strcpy(ex_args[i+1], cmd_args[i]);
     }
-    cmd_args[arg_len+1] = NULL;
+    ex_args[arg_len+1] = NULL;
+
+    // printf("cmd: %s\n", cmd);
+    // for (int i = 0; i <= arg_len; i++)
+    //     printf("%s - ", ex_args[i]);
+    // printf("\n");
 
     if (execvp(cmd, ex_args) < 0) {
-        printf("Error executing command system command '%s'\n", cmd);
+        perror("Error executing command system command");
         for (int i = 0; i <= arg_len; i++) {
             free(ex_args[i]);
         }

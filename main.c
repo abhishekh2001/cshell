@@ -8,6 +8,8 @@ int main() {
     // struct passwd *pw = getpwuid(getuid());
     // homedir = pw->pw_dir;
 
+    printf("Current pid = %d\n", getpid());
+
     bg_procs = makelist();
 
     homedir = malloc(sizeof(char) * STR_SIZE);
@@ -26,7 +28,7 @@ int main() {
     // loop for prompt
     while (1) {
         display_prompt();
-        
+
         // --------- RETRIEVE INPUT ----------
         if (getline (&inp, &temp, stdin) < 0) {
             perror("Error getting input");
@@ -35,7 +37,8 @@ int main() {
         if (inp[strlen(inp)-1] == '\n')
             inp[strlen(inp)-1] = '\0';
 
-        separate_cmd(inp);
+        if (separate_cmd(inp) == -2)
+            break;
 
         // update_bg_procs();
 

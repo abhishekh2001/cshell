@@ -10,7 +10,8 @@
 // loop through array
 // execute one by one
 // so sed
-void separate_cmd(char* inp) {
+int separate_cmd(char* inp) {
+    int quit = 0;
     unsigned long num_cmds = 0;
 
     char** cmd_arr = (char**) malloc(sizeof(char) * (strlen(inp) + 10));
@@ -24,13 +25,15 @@ void separate_cmd(char* inp) {
     }
 
     for (int i = 0; i < num_cmds; i++) {
-        handle_cmd(cmd_arr[i]);
+        if (handle_cmd(cmd_arr[i]) == -2)
+            quit = -2;
         free(cmd_arr[i]);
     }
     free(cmd_arr);
+    return quit;
 }
 
-void handle_cmd(char* inp_cmd) {
+int handle_cmd(char* inp_cmd) {
     char* inp = (char*) malloc(sizeof(char) * (strlen(inp_cmd)));
     strcpy(inp, inp_cmd);
     char* cmd = (char*) malloc(sizeof(char) * (strlen(inp)+10));
@@ -44,10 +47,10 @@ void handle_cmd(char* inp_cmd) {
     char* line = (char*) malloc(sizeof(char)*(strlen(inp)+10));
     strcpy(line, inp);
 
-    char* chnk = strtok(line, " \t");
+    char* chnk = strtok(line, " \t");                     // *************************8 CHANGE
     if (chnk == NULL) {
         printf("Abruptly exit tokenizing command\n");
-        return;
+        return -1;
     }
     strcpy(cmd, chnk);
     
@@ -69,6 +72,7 @@ void handle_cmd(char* inp_cmd) {
     // printf("\n");
     // printf("------ NOW HANDLING COMMAND-----------\n");
 
+    int quit = 0;
     if (!strcmp(cmd, "cd")) {
         cd_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "echo")) {
@@ -79,6 +83,8 @@ void handle_cmd(char* inp_cmd) {
         ls_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "pinfo")) {
         pinfo_implementation(cmd, cmd_args, cmd_len);
+    } else if (!strcmp(cmd, "quit")) {
+        quit = -2;
     }
     else {
         if (cmd_len >= 1 && strcmp(cmd_args[cmd_len-1], "&") == 0) {
@@ -96,4 +102,6 @@ void handle_cmd(char* inp_cmd) {
     free(cmd_args);
     free(cmd);
     free(inp);
+
+    return quit;
 }

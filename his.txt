@@ -1,0 +1,16 @@
+cd
+./shell.out
+ls
+quit
+
+
+
+
+
+
+
+
+
+
+
+

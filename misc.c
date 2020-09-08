@@ -2,7 +2,6 @@
 #include "misc.h"
 
 void handle_tilda(char* path, char* res) {
-    printf("Handle tilda %s\n", path);
     if (strcmp(path, "~") == 0) {
         strcpy(res, homedir);
     } else if (path[0] == '~') {
@@ -11,8 +10,6 @@ void handle_tilda(char* path, char* res) {
     } else {
         strcpy(res, path);
     }
-
-    printf("res %s\n", res);
 }
 
 void insert_tilda(char* path) {

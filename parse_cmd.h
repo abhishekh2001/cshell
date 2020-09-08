@@ -1,2 +1,2 @@
-void handle_cmd(char* inp);
-void separate_cmd(char* inp);
+int handle_cmd(char* inp);
+int separate_cmd(char* inp);

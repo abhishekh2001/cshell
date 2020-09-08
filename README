@@ -10,3 +10,5 @@ When executing commands separated by semicolons, execute
 Since linked list implementation is trivial, avail the use of online resources: 
     https://github.com/skorks/c-linked-list/blob/master/linkedlist.h
 modified
+
+vi not handled

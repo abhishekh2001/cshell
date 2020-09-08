@@ -3,10 +3,9 @@
 #include "command_implementation.h"
 #include "misc.h"
 #include "io.h"
-#include "parse_cmd.h"
 
 int fg_execution(char* cmd, char** cmd_args, const int arg_len) {
-    pid_t cpid, w;
+    pid_t cpid;
     int status;
 
     cpid = fork();
@@ -18,25 +17,20 @@ int fg_execution(char* cmd, char** cmd_args, const int arg_len) {
    if (cpid == 0) {            /* Code executed by child */
         setpgid(0, 0);
         system_cmd_implementation(cmd, cmd_args, arg_len);
-        return 0;
-   } else {                    /* Code executed by parent */
-        do {
-            w = waitpid(cpid, &status, WUNTRACED);
-            if (w == -1) {
-                perror("waitpid");
-                return -1;
-            }
+        exit(0);
+    } else {                    /* Code executed by parent */
+        signal(SIGTTIN, SIG_IGN);
+        signal(SIGTTOU, SIG_IGN);
+        setpgid(cpid, 0);
+        tcsetpgrp(STDIN_FILENO, cpid);
 
-        //    if (WIFEXITED(status)) {
-        //         printf("exited, status=%d\n", WEXITSTATUS(status));
-        //     } else if (WIFSIGNALED(status)) {
-        //         printf("killed by signal %d\n", WTERMSIG(status));
-        //     } else if (WIFSTOPPED(status)) {
-        //         printf("stopped by signal %d\n", WSTOPSIG(status));
-        //     } else if (WIFCONTINUED(status)) {
-        //         printf("continued\n");
-        //     }
-        } while (!WIFEXITED(status));
+        waitpid(cpid, &status, WUNTRACED);
+
+        tcsetpgrp(STDIN_FILENO, getpgrp());
+        signal(SIGTTIN, SIG_DFL);
+        signal(SIGTTOU, SIG_DFL);
+        
+        printf("Done waiting\n");
         return 0;
     }
 }

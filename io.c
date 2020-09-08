@@ -40,7 +40,7 @@ int get_prompt(char* str) {
     char username[STR_SIZE], path[STR_SIZE], temp_ch[2];
     temp_ch[1] = '\0';
 
-    if (gethostname(username, STR_SIZE) < 0) {
+    if (getlogin_r(username, STR_SIZE) < 0) {
         perror("Error retrieving hostname");
         return -1;
     }
