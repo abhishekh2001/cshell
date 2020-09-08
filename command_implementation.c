@@ -76,7 +76,6 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
         }
     }
 
-    printf("numdirs encountered = %d\n", num_dirs);
     if (num_dirs == 0) {
         char* cwd = malloc(sizeof(char) * STR_SIZE);
         if (getcwd(cwd, STR_SIZE) == NULL) {
@@ -219,15 +218,10 @@ int ls(char* path, int flags[256], int print_name) {
                 free(filepath);
             }
             printf("total: %ld\n", total_blocks / 2);  // Check later why div_2?
-            // if (closedir(dir) < 0) {
-            //     perror("error closing dir");
-            //     return -1;
-            // }
             if (closedir(dir) < 0) {
                 perror("Error closing dir");
                 return -1;
             }
-            printf("Closed directory\n");
         } else {
             /* could not open directory */
             perror("Could not open directory");
@@ -248,7 +242,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
         pid = getpid();
         sprintf(pid_str, "%d", pid);
     } else if (arg_len > 1) {
-        printf("Error at pinfo: invalid number of arguments\n");
+        fprintf(stderr, "Error at pinfo: invalid number of arguments\n");
         return -1;
     } else {
         for (int i = 0; i < strlen(cmd_args[0]); i++) {
@@ -258,13 +252,11 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
             }
         }
         if ((pid = strtol(cmd_args[0], NULL, 10)) < 0) {
-            printf("Error at pinfo: pid cannot be negative\n");
+            fprintf(stderr, "Error at pinfo: pid cannot be negative\n");
             return -1;
         }
         strcpy(pid_str, cmd_args[0]);
     }
-
-    printf("Retrieved pid = %d\n", pid);
 
     // process path: /proc/<pid>/status
     strcpy(process_status_path, "/proc/");
@@ -275,7 +267,6 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     strcat(process_exec_path, pid_str);
     strcat(process_exec_path, "/exe");
 
-    printf("Proc status path = %s\n", process_status_path);
     FILE* f_process_status = fopen(process_status_path, "r");
     if (f_process_status == NULL) {
         perror("Error opening process status file");
@@ -296,7 +287,6 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
         }
     }
 
-    printf("Done reading stat file\n");
     fclose(f_process_status);
 
     if ((p_exec_path_len = readlink(process_exec_path, line, STR_SIZE)) < 0) {

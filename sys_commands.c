@@ -19,18 +19,22 @@ int fg_execution(char* cmd, char** cmd_args, const int arg_len) {
         system_cmd_implementation(cmd, cmd_args, arg_len);
         exit(0);
     } else {                    /* Code executed by parent */
-        signal(SIGTTIN, SIG_IGN);
+
+        /* Refer: https://stackoverflow.com/questions/5341220/how-do-i-get-tcsetpgrp-to-work-in-c */
+        /*
+            You need to call tcsetpgrp() in your parent process not in child
+            Parent process will receive SIGTTOU and will be stopped.
+        */
         signal(SIGTTOU, SIG_IGN);
+
         setpgid(cpid, 0);
         tcsetpgrp(STDIN_FILENO, cpid);
 
         waitpid(cpid, &status, WUNTRACED);
 
-        tcsetpgrp(STDIN_FILENO, getpgrp());
-        signal(SIGTTIN, SIG_DFL);
+        tcsetpgrp(STDIN_FILENO, getpid());
+
         signal(SIGTTOU, SIG_DFL);
-        
-        printf("Done waiting\n");
         return 0;
     }
 }
@@ -93,7 +97,7 @@ int proc_status(pid_t pid) {
 }
 
 
-// DOES NOT WORK, AT ALL
+// naiive
 void update_bg_procs() {
     Node * curr = bg_procs->head;
     int status;

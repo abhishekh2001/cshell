@@ -4,7 +4,6 @@
 
 int tokenize(char* raw_input, char* command, char** cmd_args, int* command_length) {
     int cmd_len = 0;
-
     char* line = (char*) malloc(sizeof(char)*strlen(raw_input)+10);
 
     strcpy(line, raw_input);
@@ -12,7 +11,7 @@ int tokenize(char* raw_input, char* command, char** cmd_args, int* command_lengt
     char* cmd = strtok(line," \t");
 
     if (cmd == NULL) {
-        printf("Abruptly exit tokenizing command\n");
+        fprintf(stderr,"Abruptly quitting tokenizing command\n");
         return -1;
     }
     strcpy(command, cmd);
@@ -37,15 +36,16 @@ int tokenize(char* raw_input, char* command, char** cmd_args, int* command_lengt
 
 int get_prompt(char* str) {
     struct utsname val;
-    char username[STR_SIZE], path[STR_SIZE], temp_ch[2];
+    char username[STR_SIZE], path[STR_SIZE], temp_ch[2],
+         hostname[STR_SIZE];
     temp_ch[1] = '\0';
 
     if (getlogin_r(username, STR_SIZE) < 0) {
         perror("Error retrieving hostname");
         return -1;
     }
-    if (uname(&val) < 0) {
-        perror("Failed to retrieve user details");
+    if (gethostname(hostname, STR_SIZE) < 0) {
+        perror("Failed to retrieve hostname");
         return -1;
     }
     if (getcwd(path, STR_SIZE) == NULL) {
@@ -62,12 +62,13 @@ int get_prompt(char* str) {
     strcpy (str, temp_ch);
     strcat(str, username); (temp_ch[0] = '@');
     strcat(str, temp_ch);
-    strcat(str, val.sysname); temp_ch[0] = ':';
+    strcat(str, hostname); temp_ch[0] = ':';
     strcat(str, temp_ch);
     strcat(str, path); temp_ch[0] = '>';
     strcat(str, temp_ch);
 }
 
+// Why do I need this?
 void display_prompt() {
     char prompt[STR_SIZE];
     get_prompt(prompt);

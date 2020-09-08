@@ -4,12 +4,7 @@
 #include "parse_cmd.h"
 #include "sys_commands.h"
 
-int main() {
-    // struct passwd *pw = getpwuid(getuid());
-    // homedir = pw->pw_dir;
-
-    printf("Current pid = %d\n", getpid());
-
+int init() {
     bg_procs = makelist();
 
     homedir = malloc(sizeof(char) * STR_SIZE);
@@ -17,11 +12,17 @@ int main() {
         perror("Error getting cwd");
         return -1;
     }
+    return 0;
+}
+
+int main() {
+    if (init() < 0) {
+        return -1;
+    }
 
     size_t temp;
     char prompt[STR_SIZE], clean_inp[STR_SIZE];
-    char* inp;
-    inp = malloc(STR_SIZE);
+    char* inp = (char*) malloc(sizeof(char) * STR_SIZE);
 
     signal(SIGCHLD, update_bg_procs_sig);
 
