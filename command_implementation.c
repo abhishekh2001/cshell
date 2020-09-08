@@ -15,7 +15,7 @@ int echo_implementation(char* cmd, char** cmd_args, const int arg_len) {
 // TODO: handle ~ flag
 int cd_implementation(char* cmd, char** cmd_args, const int arg_len) {
     if (arg_len > 1) {
-        printf("Incorrect number of arguments or space encountered\n");
+        fprintf(stderr, "Incorrect number of arguments or space encountered\n");
         return -1;
     }
 
@@ -62,7 +62,7 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
             for (int j = 1; j < cmd_args_len; j++) {
                 opt = cmd_args[i][j];
                 if (opt != 'l' && opt != 'a') {
-                    printf("Invalid option '%c' encountered\n", opt);
+                    fprintf(stderr, "ls error: Invalid option '%c' encountered\n", opt);
                     return -1;
                 }
                 flags[opt] = 1;
@@ -247,7 +247,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     } else {
         for (int i = 0; i < strlen(cmd_args[0]); i++) {
             if (cmd_args[0][i] < '0' || cmd_args[0][i] > '9') {
-                printf("Error at pinfo: Illegal argument\n");
+                fprintf(stderr, "Error at pinfo: Illegal argument\n");
                 return -1;
             }
         }

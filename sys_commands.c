@@ -146,5 +146,4 @@ void update_bg_procs_sig() {
             delete(cpid, bg_procs);
         }
     }
-    // update_bg_procs();
 }

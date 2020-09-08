@@ -10,6 +10,8 @@
 // loop through array
 // execute one by one
 // so sed
+// returns -2 if "quit" command is
+// encountered
 int separate_cmd(char* inp) {
     int quit = 0;
     unsigned long num_cmds = 0;
@@ -33,6 +35,7 @@ int separate_cmd(char* inp) {
     return quit;
 }
 
+// Returns -2 if "quit" command is encountered
 int handle_cmd(char* inp_cmd) {
     char* inp = (char*) malloc(sizeof(char) * (strlen(inp_cmd)));
     strcpy(inp, inp_cmd);
@@ -40,16 +43,13 @@ int handle_cmd(char* inp_cmd) {
     char** cmd_args = (char**) malloc(sizeof(char*) * strlen(inp));
     int cmd_len = 0;
 
-    // tokenize(inp, cmd, cmd_args, &cmd_len);
-
-
     // tokenize
     char* line = (char*) malloc(sizeof(char)*(strlen(inp)+10));
     strcpy(line, inp);
 
     char* chnk = strtok(line, " \t");                     // *************************8 CHANGE
     if (chnk == NULL) {
-        printf("Abruptly exit tokenizing command\n");
+        fprintf(stderr, "Abruptly quitting tokenizing command\n");
         return -1;
     }
     strcpy(cmd, chnk);
