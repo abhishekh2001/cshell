@@ -6,7 +6,6 @@ int tokenize(char* raw_input, char* command, char** cmd_args, int* command_lengt
     int cmd_len = 0;
 
     char* line = (char*) malloc(sizeof(char)*strlen(raw_input)+10);
-    printf("Successfully created line\n");
 
     strcpy(line, raw_input);
 
@@ -20,9 +19,7 @@ int tokenize(char* raw_input, char* command, char** cmd_args, int* command_lengt
     
     // should be alloted by caller
     // cmd_args = (char**) malloc(sizeof(char**) * strlen(raw_input)+1);
-    printf("Successfully alloted mem for **cmd_args\n");
 
-    printf("Command copied %s\n", command);
     cmd = strtok(NULL, " \t");
     while (cmd != NULL) {
         cmd_args[cmd_len] = (char*) malloc(sizeof(char) * strlen(cmd));
@@ -60,7 +57,6 @@ int get_prompt(char* str) {
     }
 
     insert_tilda(path);
-    printf("With tilda: %s\n", path);
 
     temp_ch[0] = '<';
     strcpy (str, temp_ch);
@@ -70,4 +66,10 @@ int get_prompt(char* str) {
     strcat(str, temp_ch);
     strcat(str, path); temp_ch[0] = '>';
     strcat(str, temp_ch);
+}
+
+void display_prompt() {
+    char prompt[STR_SIZE];
+    get_prompt(prompt);
+    printf("%s ", prompt);
 }

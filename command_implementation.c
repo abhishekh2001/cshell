@@ -277,7 +277,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     printf("Proc status path = %s\n", process_status_path);
     FILE* f_process_status = fopen(process_status_path, "r");
     if (f_process_status == NULL) {
-        printf("Error opening process status file\n");
+        perror("Error opening process status file");
         return -1;
     }
 

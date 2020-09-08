@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <dirent.h>
+#include <signal.h>
 #include <time.h>
 #include <pwd.h>
 #include "linkedlist.h"

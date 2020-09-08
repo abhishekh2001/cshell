@@ -2,6 +2,7 @@
 #include "io.h"
 #include "command_implementation.h"
 #include "parse_cmd.h"
+#include "sys_commands.h"
 
 int main() {
     // struct passwd *pw = getpwuid(getuid());
@@ -20,13 +21,13 @@ int main() {
     char* inp;
     inp = malloc(STR_SIZE);
 
+    signal(SIGCHLD, update_bg_procs_sig);
+
     // loop for prompt
     while (1) {
-        get_prompt(prompt);
-        printf("%s ", prompt);
+        display_prompt();
         
         // --------- RETRIEVE INPUT ----------
-        // scanf(" %[^\n]s", inp);
         if (getline (&inp, &temp, stdin) < 0) {
             perror("Error getting input");
             return 1;
@@ -34,8 +35,9 @@ int main() {
         if (inp[strlen(inp)-1] == '\n')
             inp[strlen(inp)-1] = '\0';
 
-        printf("Input: %s\n", inp);
         separate_cmd(inp);
+
+        // update_bg_procs();
 
         fflush(stdin);
     }
