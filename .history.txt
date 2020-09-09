@@ -1,20 +1,20 @@
-pinfo
-pinfo 4606
-pinfo 5396
-pinfo 4573
-pinfo 4582
-kill 4582
-quit
-ls
-ls
-make
-./sh
-quit
-emacs &
-emacs &
-make
-./shell.out
 quit
 emacs &
 kill 8403
+quit
+ls
+cd ..
+ls
+c d..
+ls
+c ddd
+quit
+l s..
+emacs &
+emacs &
+kill 13612
+ls
+ls -l
+ls -al
+ls -l
 quit

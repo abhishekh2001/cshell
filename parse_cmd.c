@@ -93,7 +93,6 @@ int handle_cmd(char* inp_cmd) {
     } else if (!strcmp(cmd, "history")) {
         history_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "quit")) {
-        printf("Attempting to quit\n");
         quit = -2;
     }
     else {
