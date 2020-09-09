@@ -7,8 +7,9 @@ When executing commands separated by semicolons, execute
     unless of course, the first were to be a background
     process.
 
-Since linked list implementation is trivial, avail the use of online resources: 
+Since linked list implementation is trivial, avail the use and modify online resources: 
     https://github.com/skorks/c-linked-list/blob/master/linkedlist.h
-modified
 
-vi not handled
+Assume arguments to system commands will not contain `~`, since an inplace replacement of 
+~ with the `homedir` requires a simple call to the already implemented `handle_tilda`
+function found in `misc.c`

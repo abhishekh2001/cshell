@@ -3,6 +3,8 @@
 #include "command_implementation.h"
 #include "sys_commands.h"
 #include "io.h"
+#include "history.h"
+#include "misc.h"
 
 // inp: semicolon separated inputs
 // idea: char** commands
@@ -72,6 +74,11 @@ int handle_cmd(char* inp_cmd) {
     // printf("\n");
     // printf("------ NOW HANDLING COMMAND-----------\n");
 
+    char* hist = (char*) malloc(sizeof(char) * HIST_STR_SIZE);
+    build_cmd(cmd, cmd_args, cmd_len, hist);
+    insert_history(hist);
+    free(hist);
+
     int quit = 0;
     if (!strcmp(cmd, "cd")) {
         cd_implementation(cmd, cmd_args, cmd_len);
@@ -83,7 +90,10 @@ int handle_cmd(char* inp_cmd) {
         ls_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "pinfo")) {
         pinfo_implementation(cmd, cmd_args, cmd_len);
+    } else if (!strcmp(cmd, "history")) {
+        history_implementation(cmd, cmd_args, cmd_len);
     } else if (!strcmp(cmd, "quit")) {
+        printf("Attempting to quit\n");
         quit = -2;
     }
     else {

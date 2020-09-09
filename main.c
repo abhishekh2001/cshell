@@ -2,21 +2,31 @@
 #include "io.h"
 #include "command_implementation.h"
 #include "parse_cmd.h"
+#include "history.h"
 #include "sys_commands.h"
 
 int init() {
     bg_procs = makelist();
     signal(SIGCHLD, update_bg_procs_sig);
-    homedir = malloc(sizeof(char) * STR_SIZE);
+    homedir = (char*)malloc(sizeof(char) * STR_SIZE);
+    history_path = (char*) malloc(sizeof(char) * STR_SIZE);
     if (getcwd(homedir, STR_SIZE) == NULL) {
         perror("Error getting cwd");
         return -1;
     }
+    strcpy(history_path, homedir);
+    strcat(history_path, "/.history.txt");
+
+    int hd = open(history_path, O_CREAT | O_RDWR, 0777);
+    close(hd);
+    open_history();
     return 0;
 }
 
 void cleanup() {
+    cleanup_history();
     free(homedir);
+    free(history_path);
     destroy(bg_procs);
 
     printf("Quitting!\n");

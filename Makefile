@@ -1,7 +1,7 @@
 all: initialize
 
-initialize: main.o io.o command_implementation.o parse_cmd.o misc.o sys_commands.o linkedlist.o
-	gcc main.o io.o misc.o command_implementation.o parse_cmd.o sys_commands.o linkedlist.o -o shell.out
+initialize: main.o io.o command_implementation.o parse_cmd.o misc.o sys_commands.o linkedlist.o history.o
+	gcc main.o io.o misc.o command_implementation.o parse_cmd.o sys_commands.o linkedlist.o history.o -o shell.out
 
 main.o: main.c
 	gcc -c main.c
@@ -23,3 +23,6 @@ sys_commands.o: sys_commands.c
 
 linkedlist.o: linkedlist.c
 	gcc -c linkedlist.c
+
+history.o: history.c
+	gcc -c history.c

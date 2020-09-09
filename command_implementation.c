@@ -1,6 +1,7 @@
 #include "main.h"
 #include "command_implementation.h"
 #include "misc.h"
+#include "history.h"
 
 // end with newline
 int echo_implementation(char* cmd, char** cmd_args, const int arg_len) {
@@ -337,4 +338,14 @@ int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
     free(ex_args);
     
     return 0;
+}
+
+int history_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    if (arg_len == 0) {
+        disp_history(10);
+    } else if (arg_len > 1) {
+        fprintf(stderr, "Incorrect command format: \"history [<num>]\"\n");
+    } else {
+        disp_history(strtol(cmd_args[0], NULL, 10));
+    }
 }

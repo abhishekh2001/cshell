@@ -40,7 +40,7 @@ int fg_execution(char* cmd, char** cmd_args, const int arg_len) {
 }
 
 int bg_execution(char* cmd, char** cmd_args, const int arg_len) {
-    pid_t cpid, w;
+    pid_t cpid;
     int status;
 
     cpid = fork();
@@ -137,7 +137,6 @@ void update_bg_procs_sig() {
 
     printf("\n");
     for (Node * job = bg_procs->head; job != NULL; job = job->next) {
-        printf("pid = %d\n", job->data);
         if (cpid == job->data) {
             printf("CMD[%s] having PID[%d] has terminated\n", job->cmd, job->data);
 

@@ -2,8 +2,12 @@
 #include <stdio.h>
 
 int main() {
-    char argv[100];
-    printf("here\n");
-    scanf("%s\n", argv);
-    printf("input = %s\n", argv);
+    FILE* f = fopen("/home/abhishekh/Documents/Assignments/OSN/shell-assignment/.history.txt", "r");
+    if (f) {
+        char line[256];
+        while (fgets(line, sizeof(line), f))
+                printf("%s\n", line);
+
+    }
+    fclose(f);
 }

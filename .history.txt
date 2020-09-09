@@ -1,0 +1,20 @@
+history 30
+quit
+history 30
+quit
+emacs &
+emacs &
+emacs &
+pinfo 6237
+history
+history 5
+quit
+history
+quit
+emacs &
+vim .history.txt
+history
+vim
+ls
+pinfo
+quit
