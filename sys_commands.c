@@ -113,6 +113,7 @@ void update_bg_procs() {
 }
 
 void __handle_disp() {
+    // signal(SIGTTIN, SIG_DFL);
     display_prompt();
     fflush(stdout);
 
@@ -129,20 +130,23 @@ void __handle_disp() {
 }
 
 void update_bg_procs_sig() {
-    int status;
+    int status, successful = 1;
     pid_t cpid = waitpid(-1, &status, WNOHANG);
     if (!WIFEXITED(status)) {
         return;
     }
 
+    if (WEXITSTATUS(status) != EXIT_SUCCESS)
+        successful = 0;
+
     printf("\n");
-    for (Node * job = bg_procs->head; job != NULL; job = job->next) {
-        if (cpid == job->data) {
-            printf("CMD[%s] having PID[%d] has terminated\n", job->cmd, job->data);
-
-            __handle_disp();
-
-            delete(cpid, bg_procs);
-        }
+    
+    Node * job = get_proc(cpid, bg_procs);
+    if (!job) {
+        fprintf(stderr, "Fatal error job not found\n");
+    } else {
+        fprintf(stderr, "CMD[%s] with PID[%d] exited %s\n", job->cmd, job->data, successful ? "normally" : "abnormally");
     }
+    __handle_disp();
+    delete(cpid, bg_procs);
 }

@@ -72,5 +72,7 @@ int get_prompt(char* str) {
 void display_prompt() {
     char prompt[STR_SIZE];
     get_prompt(prompt);
+    printf("\033[1;32m");
     printf("%s ", prompt);
+    printf("\033[0m");
 }

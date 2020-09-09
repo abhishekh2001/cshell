@@ -13,3 +13,12 @@ Since linked list implementation is trivial, avail the use and modify online res
 Assume arguments to system commands will not contain `~`, since an inplace replacement of 
 ~ with the `homedir` requires a simple call to the already implemented `handle_tilda`
 function found in `misc.c`
+
+History commands preserve from one shell instance to another but in the case of 
+    concurrently executing shells or nested shells, history preserved is only 
+    that of the latest terminated instance.
+    To allow history preservation (or history syncronization) between shell instances,
+    the history file can be written and read from after every single command is executed
+    but this is unnecessary and not efficient
+
+
