@@ -43,11 +43,7 @@ void store_history() {
     fclose(hist_file);
 }
 
-void disp_history(int num) {
-    if (!enable_history) {
-        fprintf(stderr, "History is not enabled as history file could not be accessed\n");
-        return;
-    }
+void disp_history(int num) {  /* will not allow for preservation if history file cannot be accessed */
     for (int i = max(0, hist_ptr-num); i < hist_ptr; i++) {
         printf("%s\n", history[i]);
     }

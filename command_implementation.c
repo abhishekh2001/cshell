@@ -274,20 +274,20 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     }
 
     char* line = (char*) malloc(sizeof(char) * (STR_SIZE + 1));  // free line
+    int line_number = 0;
     while (fgets(line, STR_SIZE, f_process_status) != NULL) {
         // line stores a single line from /proc/<pid>/status
         // cat /proc/2385/status
 
+        line_number++;
         char* word = strtok(line, COL_DEL);
         char* word_ = strtok(NULL, COL_DEL);
-        if ((strcmp(word, "State") == 0) && word_) {
+        if ((strcmp(word, "State") == 0 || line_number == 3) && word_) {
             process_status = word_[0];
-        } else if ((strcmp(word, "VmSize") == 0) && word_) {
+        } else if ((strcmp(word, "VmSize") == 0 || line_number == 18) && word_) {
             strcpy(process_mem, word_);
         }
     }
-
-    fclose(f_process_status);
 
     if ((p_exec_path_len = readlink(process_exec_path, line, STR_SIZE)) < 0) {
         perror("Accessing proc/<pid>/exe");
@@ -303,6 +303,7 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
     printf("Executable Path -- %s\n", line);
 
     free(line);
+    fclose(f_process_status);
     return 0;
 }
 

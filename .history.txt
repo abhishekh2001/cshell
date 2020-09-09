@@ -1,20 +1,20 @@
-quit
+ls -al /root/home/abhishekh
+cd
 emacs &
-kill 8403
+ls -al /root/home/abhishekh
+ls -al /home/abhishekh
+history
+history 30
 quit
+history 20
+quit
+kill 20354
+ls
+git add .
 ls
 cd ..
-ls
-c d..
-ls
-c ddd
-quit
-l s..
-emacs &
-emacs &
-kill 13612
-ls
-ls -l
-ls -al
-ls -l
+emacs
+git status
+cd shell-assignment
+git status
 quit
