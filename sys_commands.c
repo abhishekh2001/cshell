@@ -143,7 +143,7 @@ void update_bg_procs_sig() {
 
     Node * job = get_proc(cpid, bg_procs);
     if (!job) {
-        fprintf(stderr, "Fatal error job not found\n");
+        // This is fine...
     } else {
         fprintf(stderr, "CMD[%s] with PID[%d] exited %s\n", job->cmd, job->data, successful ? "normally" : "abnormally");
         __handle_disp();
