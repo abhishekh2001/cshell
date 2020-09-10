@@ -41,7 +41,8 @@ behaviour expected.
 
 - When executing commands separated by semicolons, expected behaviour is to execute commands in 
 order i.e, wait for the first command to finish execution before executing the second and so on...,
-unless of course, the first were to be a background process.
+unless of course, the first were to be a background process in which case termination of the 
+background process is not required before moving on to the next command.
 
 - Processes that specifically require foreground control (stdin/stdout) will not be executed in the background (for example, the vi program).
 
