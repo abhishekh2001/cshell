@@ -60,7 +60,7 @@ like `State` and `VmSize`).
 
 Note: The linked list is a modification of 
 [https://github.com/skorks/c-linked-list](https://github.com/skorks/c-linked-list/)
-since implementing a linked list (although relatively simple) is a timeconsuming, process prone to errors and is not the main objective
+since implementing one (although relatively simple) is timeconsuming, prone to errors and is not the main objective
 of this assignment. 
 
 ## Files
