@@ -1,4 +1,0 @@
-quit
-ls -al
-cmp
-echo something something

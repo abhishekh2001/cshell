@@ -1,20 +1,14 @@
-quit
+ls -al
+history
+cd
 cd ..
-ls -a . -l
-ls -a ~ -l
+c d..
+cd ..
+history
 cd
 ls
-pwd
-cd ..
-pwd
-cd shell-assignment
-ls
-pwd
-quit
+history 4
+wrong_cmd
+emacs &
 emacs
-subl
-quit
-emacs
-git add .
-git commit -m 'Weird bug'
 quit

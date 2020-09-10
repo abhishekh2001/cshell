@@ -22,6 +22,8 @@ void load_history() {
 }
 
 void insert_history(char* cmd) {
+    if (hist_ptr > 0 && strcmp(history[hist_ptr-1], cmd) == 0)
+        return;
     if (hist_ptr == 20) {
         for (int i = 0; i < hist_ptr-1; i++) {
             strcpy(history[i], history[i+1]);
