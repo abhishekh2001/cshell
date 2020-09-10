@@ -1,3 +1,0 @@
-pinfo
-pinfp
-ls

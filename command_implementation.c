@@ -289,6 +289,11 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
         }
     }
 
+
+    printf("pid -- %s\n", pid_str);
+    printf("Process Status -- %c\n", process_status);
+    printf("memory -- %s\n", process_mem);
+
     if ((p_exec_path_len = readlink(process_exec_path, line, STR_SIZE)) < 0) {
         perror("Accessing proc/<pid>/exe");
         return -1;
@@ -297,9 +302,6 @@ int pinfo_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
     insert_tilda(line);
 
-    printf("pid -- %s\n", pid_str);
-    printf("Process Status -- %c\n", process_status);
-    printf("memory -- %s\n", process_mem);
     printf("Executable Path -- %s\n", line);
 
     free(line);

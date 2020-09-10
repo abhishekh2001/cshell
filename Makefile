@@ -26,3 +26,6 @@ linkedlist.o: linkedlist.c
 
 history.o: history.c
 	gcc -c history.c
+
+clean:
+	rm *.o
