@@ -11,6 +11,8 @@ Invoke `make` from the directory containing the source code (here, `shell-assign
 The shell itself on execution requires `.history.txt` file to be created (or accessed if one already exists) from the directory it is executed 
 to allow for persistent history across shell instances.
 
+Has been tested on `gcc version 9.2.1 20191008 (Ubuntu 9.2.1-9ubuntu2)`
+
 ## Specifications
 
 The "shell assignment" shell provides a basic set of features as listed by the specification requirements.
