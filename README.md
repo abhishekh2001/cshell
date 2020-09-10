@@ -31,12 +31,12 @@ specified or the shell itself if no pid is provided.
 6. Finished Background Processes: When a background process is done executing, the shell is interrupted and the details of the termination
 (the process name, pid, and the termination status [normal/abnormal]) is displayed to the user.
 
-7. History: `history [-<num>]` command lists out the latest commands executed by the shell and all previous instances of the shell.
+7. History: `history [<num>]` command lists out the latest commands executed by the shell and all previous instances of the shell.
 It remembers up to 20 of the latest commands called (irrespective of successful/unsuccessful execution).
 
 ## Assumptions
 
-The following (reasonable) assumptions have been made regarding the specification requirements and the
+The following assumptions have been made regarding the specification requirements and the
 behaviour expected.
 
 - When executing commands separated by semicolons, expected behaviour is to execute commands in 
