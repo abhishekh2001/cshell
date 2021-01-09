@@ -1,10 +1,10 @@
-# Shell assignment
+# CShell
 
 ## Overview
-Creatively named, the aim of "Shell assignment" shell is to implement a simplified version of the shell for the course "Operating Systems and Networks".
+Creatively named, the aim of "cshell" shell is to implement a simplified version of the shell.
 
 ## Compilation instructions
-Invoke `make` from the directory containing the source code (here, `shell-assignment`) which creates an executable `shell.out` in the same directory
+Invoke `make` from the directory containing the source code which creates an executable `shell.out` in the same directory
 
 `make clean` can be performed to remove `*.o` files.
 
@@ -15,7 +15,7 @@ Has been tested on `gcc version 9.2.1 20191008 (Ubuntu 9.2.1-9ubuntu2)`
 
 ## Specifications
 
-The "shell assignment" shell provides a basic set of features as listed by the specification requirements.
+The "cshell" shell provides a basic set of features.
 
 1. Display requirement: Prompt is of the format `<username@hostname: cwd>` as clarified in one of the forum inquiries.
 
@@ -35,35 +35,6 @@ specified or the shell itself if no pid is provided.
 
 7. History: `history [<num>]` command lists out the latest commands executed by the shell and all previous instances of the shell.
 It remembers up to 20 of the latest commands called (irrespective of successful/unsuccessful execution).
-
-## Assumptions
-
-The following assumptions have been made regarding the specification requirements and the
-behaviour expected.
-
-- When executing commands separated by semicolons, expected behaviour is to execute commands in 
-order i.e, wait for the first command to finish execution before executing the second and so on...,
-unless of course, the first were to be a background process in which case termination of the 
-background process is not required before moving on to the next command.
-
-- Processes that specifically require foreground control (stdin/stdout) will not be executed in the background (for example, the vi program).
-
-- Arguments to system commands will not contain `~`, since an inplace replacement of 
-~ with the `homedir` requires a simple call to the already implemented `handle_tilda`
-function found in `misc.c`. For example, `vi ~/text.txt` will not be tested upon.
-
-- History syncronization between *concurrently* executing shells (including nested) is not
-required.
-
-- The `/proc/<pid>/*` files do not vary accross distrubtions (some keywords are hardcoded
-like `State` and `VmSize`).
-
-- `ctrl-c` is not required to be handled.
-
-Note: The linked list is a modification of 
-[https://github.com/skorks/c-linked-list](https://github.com/skorks/c-linked-list/)
-since implementing one (although relatively simple) is timeconsuming, prone to errors and is not the main objective
-of this assignment. 
 
 ## Files
 
