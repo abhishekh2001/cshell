@@ -1,7 +1,7 @@
-# Shell assignment
+# CSehll
 
 ## Overview
-Creatively named, the aim of "Shell assignment" shell is to implement a simplified version of the shell for the course "Operating Systems and Networks".
+Creatively named, the aim of "CShell" shell is to implement a simplified version of the shell for the course "Operating Systems and Networks".
 
 ## Compilation instructions
 Invoke `make` from the directory containing the source code (here, `shell-assignment`) which creates an executable `shell.out` in the same directory
@@ -15,7 +15,7 @@ Has been tested on `gcc version 9.2.1 20191008 (Ubuntu 9.2.1-9ubuntu2)`
 
 ## Specifications
 
-The "shell assignment" shell provides a basic set of features as listed by the specification requirements.
+The "CShell" shell provides a basic set of features as listed by the specification requirements.
 
 ### Assignment 2
 
