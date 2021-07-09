@@ -58,10 +58,29 @@ Node * get_proc(int data, List * list) {
   return NULL;
 }
 
-void add(int data, char * cmd, List * list){
+Node * get_proc_shell_id(int data, List * list) {
+  Node * current = list->head;
+  if(list->head == NULL) 
+    return NULL;
+  
+  for(; current != NULL; current = current->next) {
+    if (current->shell_id == data) {
+        return current;
+    }
+  }
+  return NULL;
+}
+
+int add(int data, char * cmd, List * list){
+  if (list == NULL) {
+    printf("list is null\n");
+    return -1;
+  }
   Node * current = NULL;
   if(list->head == NULL){
     list->head = createnode(data, cmd);
+    list->num++;
+    list->head->shell_id = list->num;
   }
   else {
     current = list->head; 
@@ -69,8 +88,10 @@ void add(int data, char * cmd, List * list){
       current = current->next;
     }
     current->next = createnode(data, cmd);
+    list->num = list->num + 1;
+    current->next->shell_id = list->num;
   }
-  list->num++;
+  return list->num;
 }
 
 void delete(int data, List * list){
@@ -86,7 +107,7 @@ void delete(int data, List * list){
       return;
     }                               
     previous = current;             
-    current = current->next;        
+    current = current->next;
   }
   list->num--;
 }                                   

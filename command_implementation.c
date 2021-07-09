@@ -1,5 +1,6 @@
 #include "main.h"
 #include "command_implementation.h"
+#include "sys_commands.h"
 #include "misc.h"
 #include "history.h"
 
@@ -20,16 +21,32 @@ int cd_implementation(char* cmd, char** cmd_args, const int arg_len) {
     }
 
     char* path = malloc(sizeof(char) * STR_SIZE);
-    if (arg_len == 0) {
+    if (arg_len == 1 && strcmp(cmd_args[0], "-") == 0) {
+        strcpy(path, last_working_directory);
+        char* temp = (char*) malloc(sizeof(char) * strlen(last_working_directory));
+        strcpy(temp, path);
+        insert_tilda(temp);
+        printf("%s\n", temp);
+        free(temp);
+    } else if (arg_len == 0) {
         strcpy(path, homedir);
     } else {
         handle_tilda(cmd_args[0], path);
+        // strcpy(last_working_directory, path);
     }
 
     if (chdir(path) < 0) {
         perror("Error changing directories");
         return -1;
     }
+    if (getcwd(path, STR_SIZE) == NULL) {
+        perror("Error getting cwd");
+        return -1;
+    }
+    strcpy(last_working_directory, curr_working_directory);
+    strcpy(curr_working_directory, path);
+
+    free(path);
     return 0;
 }
 
@@ -48,6 +65,7 @@ int pwd_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
 // Highest function
 int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    int rv = 0;
     int flags[256] = { 0 };
     int opt, cmd_args_len, num_dirs = 0, print_file_names = 0;
 
@@ -94,12 +112,13 @@ int ls_implementation(char* cmd, char** cmd_args, const int arg_len) {
 
     for (int i = 0; i < arg_len; i++) {
         if ((cmd_args[i][0] == '-' && strlen(cmd_args[i]) == 1) || cmd_args[i][0] != '-') {
-            ls(cmd_args[i], flags, print_file_names);
+            int temp_rv = ls(cmd_args[i], flags, print_file_names);
+            rv = min(rv, temp_rv);
             printf("\n");
         }
     }
     
-    return 0;
+    return rv;
 }
 
 void get_perms(struct stat s, char *perms) {
@@ -118,7 +137,7 @@ void get_perms(struct stat s, char *perms) {
     // grp
     perms[4] = (s.st_mode & S_IRGRP) ? 'r' : '-';
     perms[5] = (s.st_mode & S_IWGRP) ? 'w' : '-';
-    perms[6] = (s.st_mode & S_IRGRP) ? 'x' : '-';
+    perms[6] = (s.st_mode & S_IXGRP) ? 'x' : '-';
 
     // oth
     perms[7] = (s.st_mode & S_IROTH) ? 'r' : '-';
@@ -325,6 +344,7 @@ int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
     //     printf("%s - ", ex_args[i]);
     // printf("\n");
 
+    // printf("Before exec\n");
     if (execvp(cmd, ex_args) < 0) {
         perror("Error executing command system command");
         for (int i = 0; i <= arg_len; i++) {
@@ -333,6 +353,8 @@ int system_cmd_implementation(char* cmd, char** cmd_args, const int arg_len) {
         free(ex_args);
         return -1;
     }
+
+    // printf("Came out\n");
 
     for (int i = 0; i <= arg_len; i++) {
         free(ex_args[i]);
@@ -347,7 +369,130 @@ int history_implementation(char* cmd, char** cmd_args, const int arg_len) {
         disp_history(10);
     } else if (arg_len > 1) {
         fprintf(stderr, "Incorrect command format: \"history [<num>]\"\n");
+        return -1;
     } else {
         disp_history(strtol(cmd_args[0], NULL, 10));
     }
+    return 0;
+}
+
+int kjob_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    if (arg_len != 2) {
+        fprintf(stderr, "Error while kjob: Illegal number of arguments\n");
+        return -1;
+    }
+
+    int sid = strtol(cmd_args[0], NULL, 10), signum = strtol(cmd_args[1], NULL, 10);
+
+    Node * proc = get_proc_shell_id(sid, bg_procs);
+    if (proc == NULL) {
+        fprintf(stderr, "Error while kjob: no process found\n");
+        return -1;
+    }
+
+    if (kill(proc->data, signum) < 0) {
+        perror("Error while kjob");
+        return -1;
+    }
+
+    return 0;
+}
+
+int fg_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    if (arg_len != 1) {
+        fprintf(stderr, "Error while fg: Illegal number of args\n");
+        return -1;
+    }
+
+    int shell_id = strtol(cmd_args[0], NULL, 10);
+    if (shell_id < 0) {
+        fprintf(stderr, "Error while fg: Illegal job number\n");
+        return -1;
+    }
+
+    Node * proc = get_proc_shell_id(shell_id, bg_procs);
+    int status;
+
+    if (proc == NULL) {
+        fprintf(stderr, "Error while fg: No such process\n");
+        return -1;
+    }
+
+    char* temp_cmd = (char*) malloc(sizeof(char) * strlen(proc->cmd));
+    pid_t cpid = proc->data;
+    int temp_sid = proc->shell_id;
+    strcpy(temp_cmd, proc->cmd);
+    delete(proc->data, bg_procs);
+
+    /*  set current fg proc  */
+    curr_fg_pid = cpid;
+
+    printf("CMD[%s] with PID[%d] and shell pid [%d] started in foreground\n", temp_cmd, cpid, temp_sid);
+
+    /*  handle terminal control over to child  */
+    signal(SIGTTOU, SIG_IGN);
+
+    tcsetpgrp(STDIN_FILENO, cpid);
+
+    kill(cpid, SIGCONT);
+
+    waitpid(cpid, &status, WUNTRACED);
+
+    tcsetpgrp(STDIN_FILENO, getpgrp());
+
+    signal(SIGTTOU, SIG_DFL);
+
+    /*  cleanup  */
+    curr_fg_pid = -1;
+
+    int rv = cleanup_fg_execution(temp_cmd, NULL, 0, cpid, status);
+
+    if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
+        rv = min(rv, 0);
+    else
+        rv = -1;
+
+    free(temp_cmd);
+
+    return rv;
+
+    return rv;
+}
+
+int bg_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    if (arg_len != 1) {
+        fprintf(stderr, "Error while bg: Illegal number of arguments\n");
+        return -1;
+    }
+
+    Node * proc = get_proc_shell_id(strtol(cmd_args[0], NULL, 10), bg_procs);
+
+    if (proc == NULL) {
+        fprintf(stderr, "Error while bg: No such process found\n");
+        return -1;
+    }
+
+    if (kill(proc->data, SIGCONT) < 0) {
+        perror("Error while bg");
+        return -1;
+    }
+
+    return 0;
+}
+
+// TODO OVERKILL
+int overkill_implementation(char* cmd, char** cmd_args, const int arg_len) {
+    if (arg_len != 0) {
+        fprintf(stderr, "Error while overkill: Illegal number of arguments\n");
+        return -1;
+    }
+    Node * current = bg_procs->head;
+    Node * next = current;
+    while(current != NULL) {
+        next = current->next;
+        kill(current->data, 9);
+        current = next;
+    }
+
+    return 0;
 }
