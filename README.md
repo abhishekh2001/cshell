@@ -1,4 +1,4 @@
-# CSehll
+# CShell
 
 ## Overview
 Creatively named, the aim of "CShell" shell is to implement a simplified version of the shell for the course "Operating Systems and Networks".
